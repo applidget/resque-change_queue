@@ -1,1 +1,76 @@
-Hello !
+<style scoped>
+  #main .change-queue form {
+    /* resets */
+    float:none;
+    margin-top:20px;
+    margin-left: 0px;
+  }
+  #main .change-queue label {
+    float:none;
+    display: block;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: 700;
+  }
+
+  #main .change-queue .form-group {
+    margin-bottom: 15px;
+  }
+
+  #main .change-queue .form-control {
+    display: block;
+  }
+
+  #main .change-queue .args .form-group {
+    margin-bottom:8px;
+  }
+
+</style>
+<script type="text/javascript">
+  (function($) {
+    $(document).ready(function(){
+      $(".args input").live("keyup", function(e) {
+        var currentNumber = $(".args input").length;
+        var target = e.target;
+        var lastElementName = "args[" + (currentNumber - 1) + "]";
+        //Is is the last element ? Is there any content then ?
+        if (target.name == lastElementName && target.value.length > 0) {
+          var newEl = '<div class="form-group"><input autocomplete="off" type="input" class="form-control" name="args[' + currentNumber + ']" placeholder="argument ' + (currentNumber + 1) +'"></input></div>';
+          $(".args").append(newEl);
+        }
+      });
+    });
+  })(jQuery);
+
+</script>
+<div class="title clearfix">
+  <h1>Change queue</h1>
+</div>
+<p>
+  You can query jobs on a certain queue based on classname and args and requeue them into another one.
+</p>
+<div class="change-queue">
+  <form method="POST" action="/resque/delayed/search">
+    <div class="form-group">
+      <label for="queue">Queue</label>
+      <select class="form-control" name="queue">
+        <option> Queue 1</option>
+        <option> Queue 2</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="classname">Class name</label>
+      <input type="input" autocomplete="off" class="form-control" name="classname" value="">
+    </div>
+    <div class="args">
+      <div class="form-group">
+        <label for="args[0]">Arguments</label>
+        <input type="input" autocomplete="off" class="form-control" name="args[0]" placeholder="argument 1">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <input type="submit" value="Show jobs">
+    </div>
+  </form>
+</div>
