@@ -1,5 +1,6 @@
 require "resque/change_queue/version"
 require "resque"
+require 'resque/server'
 
 module Resque
   module ChangeQueue
@@ -37,3 +38,4 @@ module Resque
     end
   end
 end
+require 'resque/change_queue/server'
