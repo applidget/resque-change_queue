@@ -50,12 +50,13 @@
   You can query jobs on a certain queue based on classname and args and requeue them into another one.
 </p>
 <div class="change-queue">
-  <form method="POST" action="/resque/delayed/search">
+  <form method="POST" action="#">
     <div class="form-group">
       <label for="queue">Queue</label>
       <select class="form-control" name="queue">
-        <option> Queue 1</option>
-        <option> Queue 2</option>
+        <% Resque.queues.each do |q| %>
+          <option><%= q %></option>
+        <% end %>
       </select>
     </div>
     <div class="form-group">
