@@ -26,9 +26,15 @@ describe Resque::ChangeQueue do
       expect(Resque.size(:main)).to eq(0)
       expect(Resque.size(:low)).to eq(1)
     end
+
+    it "removes the tmp queue after job is done" do
+      Resque::ChangeQueue.change_queue(:main, :low, SomeJob)
+      debugger
+      expect(Resque.queues.count).to eq(2)
+    end
   end
 
-  context "when other jobss are present in source queue" do
+  context "when other jobs are present in source queue" do
     it "does not move other jobs" do
       Resque.enqueue SomeOtherJob, "one", "two"
       Resque::ChangeQueue.change_queue(:main, :low, SomeJob)
