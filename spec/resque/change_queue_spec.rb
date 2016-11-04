@@ -10,7 +10,6 @@ end
 
 class SomeOtherJob
   @queue = :main
-
   def self.perform(arg1,arg2)
   end
 end
@@ -29,7 +28,6 @@ describe Resque::ChangeQueue do
 
     it "removes the tmp queue after job is done" do
       Resque::ChangeQueue.change_queue(:main, :low, SomeJob)
-      debugger
       expect(Resque.queues.count).to eq(2)
     end
   end
@@ -65,6 +63,58 @@ describe Resque::ChangeQueue do
       expect(Resque.size(:low)).to eq(2)
     end
 
+  end
+
+  context "when querying a queue based on parameters" do
+    it "outputs exactly 100 jobs when parameter not specified" do
+      103.times do
+        Resque.enqueue SomeJob, "other", "two"
+      end
+      results = Resque::ChangeQueue.search_jobs(:main, SomeJob)
+      expect(results.count).to eq(100)
+    end
+
+    it "outputs only 10 jobs" do
+      11.times do
+        Resque.enqueue SomeJob, "other", "two"
+      end
+      results = Resque::ChangeQueue.search_jobs(:main, SomeJob, [], 0 , 10)
+      expect(results.count).to eq(10)
+    end
+
+    it "outputs only jobs with the right class" do
+      876.times do |cpt|
+        Resque.enqueue SomeOtherJob, "other", cpt
+      end
+
+      10.times do |cpt|
+        Resque.enqueue SomeJob, "other", "so ?"
+      end
+
+      results = Resque::ChangeQueue.search_jobs(:main, SomeJob)
+      expect(results.count).to eq(11)
+    end
+
+    it "outputs only jobs with right class + matching params" do
+      876.times do |cpt|
+        Resque.enqueue SomeOtherJob, "other", cpt
+      end
+
+      10.times do |cpt|
+        Resque.enqueue SomeJob, "other", "so ?"
+      end
+
+      28.times do |cpt|
+        Resque.enqueue SomeJob, "other", "match"
+      end
+
+      results = Resque::ChangeQueue.search_jobs(:main, SomeJob, ["other"])
+      expect(results.count).to eq(38)
+
+      results = Resque::ChangeQueue.search_jobs(:main, SomeJob, ["other", "match"])
+      expect(results.count).to eq(28)
+
+    end
   end
 
 

@@ -18,7 +18,20 @@ module Resque
 
         base.class_eval do
           get "/changequeue" do
-            erb File.read(Resque::ChangeQueue::Server.erb_path('change_queue.html.erb'))
+            erb File.read(Resque::ChangeQueue::Server.erb_path('search.html.erb'))
+          end
+
+          get "/changequeue/jobs" do
+            klassname = params[:classname]
+
+            #Process args to remove all tailing blank ones
+            args = params[:args].keys.reverse
+            while args.count > 0 && args[0].try(:length) > 0
+              args.shift
+            end
+            args = args.reverse!
+            jobs = Resque::ChangeQueue.search_jobs(params[:queue], klassname, args)
+            erb File.read(Resque::ChangeQueue::Server.erb_path('jobs.html.erb')),{}, jobs: jobs
           end
         end
 

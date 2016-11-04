@@ -26,6 +26,23 @@ module Resque
       moved_count
     end
 
+    def search_jobs(queue, klass, args = [], start = 0, count = 100)
+      matched_jobs = []
+      has_next = true
+      while has_next
+        page = Resque.peek(queue, start, 100)
+        page.each do |job|
+          next unless job["class"] == klass.to_s
+          matched_jobs << job if match_args(job["args"], args)
+          break if matched_jobs.count >= count
+        end
+        break if matched_jobs.count >= count
+        has_next = (page != nil &&  page.count == 100)
+        start += 100
+      end
+      matched_jobs
+    end
+
     def match_args(job_args, criteria_args)
       match = true
       criteria_args.each_with_index do |item, index|

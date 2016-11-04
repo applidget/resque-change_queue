@@ -1,0 +1,69 @@
+<style scoped>
+  #main .change-queue form {
+    /* resets */
+    float:none;
+    margin-top:20px;
+    margin-left: 0px;
+  }
+  #main .change-queue label {
+    float:none;
+    display: block;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: 700;
+  }
+
+  #main .change-queue .form-group {
+    margin-bottom: 15px;
+  }
+
+  #main .change-queue .form-control {
+    display: block;
+  }
+
+  #main .change-queue .args .form-group {
+    margin-bottom:8px;
+  }
+
+</style>
+
+<table class='jobs'>
+  <p>
+    <%= jobs.count == 100 ? "100+" : jobs.count %> jobs with your criteria in this queue
+  </p>
+  <div class="change-queue">
+    <form method="POST" action="<%= url_path "/changequeue/move_jobs"%>" >
+      <div class="form-group">
+        <label for="queue">Move to queue</label>
+        <select class="form-control" name="queue">
+          <% Resque.queues.each do |q| %>
+            <option><%= q %></option>
+          <% end %>
+        </select>
+        <div style="display:none">
+          <input name="classname" value="<%= classname %>">
+          <input name="args" value="<%= args %>">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <input type="submit" value="Move jobs">
+      </div>
+    </form>
+  </div>
+  <tr>
+    <th>Class</th>
+    <th>Args</th>
+  </tr>
+  <% for job in jobs %>
+  <tr>
+    <td class='class'><%= job['class'] %></td>
+    <td class='args'><%=h job['args'].inspect %></td>
+  </tr>
+  <% end %>
+  <% if jobs.empty? %>
+  <tr>
+    <td class='no-data' colspan='2'>There are no pending job with these criteria</td>
+  </tr>
+  <% end %>
+</table>

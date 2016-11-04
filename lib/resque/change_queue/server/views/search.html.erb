@@ -50,7 +50,7 @@
   You can query jobs on a certain queue based on their class name and args in order to requeue them into another one.
 </p>
 <div class="change-queue">
-  <form method="POST" action="#">
+  <form method="GET" action="<%= url_path "/changequeue/jobs"%>" >
     <div class="form-group">
       <label for="queue">Queue</label>
       <select class="form-control" name="queue">
