@@ -25,13 +25,29 @@ module Resque
             klassname = params[:classname]
 
             #Process args to remove all tailing blank ones
-            args = params[:args].keys.reverse
-            while args.count > 0 && args[0].try(:length) > 0
+            args_hash = params[:args] || {}
+            args = args_hash.values.reverse
+            while args.count > 0 && args[0].try(:length) == 0
               args.shift
             end
             args = args.reverse!
             jobs = Resque::ChangeQueue.search_jobs(params[:queue], klassname, args)
-            erb File.read(Resque::ChangeQueue::Server.erb_path('jobs.html.erb')),{}, jobs: jobs
+            tpl_params = {
+              jobs: jobs,
+              classname: klassname,
+              source_queue: params[:queue],
+              args: Base64.encode64(args.to_json)
+            }
+            erb File.read(Resque::ChangeQueue::Server.erb_path('jobs.html.erb')),{}, tpl_params
+          end
+
+          post "/changequeue/move_jobs" do
+            args = JSON.parse(Base64.decode64(params["b64_args"]))
+            results = Resque::ChangeQueue.change_queue(params[:source_queue], params[:queue], params[:classname], args)
+
+            #FIXME if resque mounted somewhere else the redirection won't work ..
+            #TODO: Display some kind of notice to next page 
+            redirect "/resque/changequeue", 302
           end
         end
 
