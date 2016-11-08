@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = Resque::ChangeQueue::VERSION
   spec.authors       = ["rpechayr"]
   spec.email         = ["romain.pechayre@applidget.com"]
-
+  spec.homepage      = "https://github.com/applidget/resque-change_queue"
   spec.summary = 'Reorganize queued jobs on the fly'
   spec.description = <<-DESCRIPTION
     Allows you to requeue jobs to another queue
@@ -37,7 +37,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.13"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_development_dependency "byebug"
+  spec.add_development_dependency "byebug", "~> 9.0"
 
   spec.add_runtime_dependency 'redis', '~> 3.0'
   spec.add_runtime_dependency 'resque', '~> 1.25'
