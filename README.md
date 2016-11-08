@@ -1,8 +1,14 @@
-# Resque::ChangeQueue
+# Resque ChangeQueue
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/resque/change_queue`. To experiment with that code, run `bin/console` for an interactive prompt.
+Resque ChangeQueue is a [Resque](https://github.com/resque/resque) plugin allowing you to move jobs from one queue to another. This can be useful in some situation where some queue can be unexpectedly filled with thousands of slow jobs to isolate them in a low queue in order not to block normal jobs.
 
-TODO: Delete this and the text above, and describe your gem
+Jobs can be queried based on their Class name and parameters.
+
+Requeuing is done in a smart way such that you are 100% sure not to loose any job:
+- The entire source queue is flushed (using `redis.pop`)
+- Matched jobs are queued to the target queue directly
+- Un matched jobs are queued to a temporay queue dedicated to the operation
+- Finally all jobs in the temporary queue are requeued in the source queue
 
 ## Installation
 
@@ -20,22 +26,32 @@ Or install it yourself as:
 
     $ gem install resque-change_queue
 
-## Usage
+## Usage from the UI
 
-TODO: Write usage instructions here
+This plugin is primarly built to enable manual jobs manipulation from resque web interface (native resque 1.x sinatra web interface). When including the gem into your Gemfile, you'll create a new tab in resque UI. You can filter the jobs from here, and then validate.
+![](https://s3-eu-west-1.amazonaws.com/assets.applidget.com/documentation/change-queue-home.png)
 
-## Development
+You can add as many args in this step, and jobs will be matched based on strict equality of each parameter. If you specify less parameters than the number of parameters in the target jobs, additional parameters will be considered as matching. This allows you to filter jobs assuming that the first arguments are top level object ids (for example if your args are `[project_id, discussion_id, comment_id]`).
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+The next screen show you the first 100 jobs matching your criteria. Just pick a target queue and validate, you're done !
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+![](https://s3-eu-west-1.amazonaws.com/assets.applidget.com/documentation/change-queue-jobs.png)
+
+
+## Usage from code
+
+You can call Resque ChangeQueue from a console or from code :
+```ruby
+Resque::ChangeQueue.change_queue(source_q, target_q, "SomeJobClass", args)
+```
+
+*Note*: `args` is an optional parameter.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/resque-change_queue. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/applidget/resque-change_queue. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
