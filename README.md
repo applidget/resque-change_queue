@@ -1,4 +1,5 @@
 # Resque ChangeQueue
+[![Build Status](https://travis-ci.org/applidget/resque-change_queue.svg?branch=master)](https://travis-ci.org/applidget/resque-change_queue)
 
 Resque ChangeQueue is a [Resque](https://github.com/resque/resque) plugin allowing you to move jobs from one queue to another. This can be useful in some situation where some queue can be unexpectedly filled with thousands of slow jobs to isolate them in a low queue in order not to block normal jobs.
 
