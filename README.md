@@ -34,7 +34,7 @@ This plugin is primarly built to enable manual jobs manipulation from resque web
 
 You can add as many args in this step, and jobs will be matched based on strict equality of each parameter. If you specify less parameters than the number of parameters in the target jobs, additional parameters will be considered as matching. This allows you to filter jobs assuming that the first arguments are top level object ids (for example if your args are `[project_id, discussion_id, comment_id]`).
 
-The next screen show you the first 100 jobs matching your criteria. Just pick a target queue and validate, you're done !
+The next screen show you the first 100 jobs matching your criteria. Just pick a target queue and validate, you're done!
 
 ![](https://s3-eu-west-1.amazonaws.com/assets.applidget.com/documentation/change-queue-jobs.png)
 
