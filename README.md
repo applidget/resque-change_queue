@@ -1,5 +1,5 @@
 # Resque ChangeQueue
-![example workflow](https://github.com/marekls/resque-change_queue/actions/workflows/testing.yml/badge.svg?branch=master)
+![example workflow](https://github.com/applidget/resque-change_queue/actions/workflows/testing.yml/badge.svg?branch=master)
 
 Resque ChangeQueue is a [Resque](https://github.com/resque/resque) plugin allowing you to move jobs from one queue to
 another. This can be useful in some situation where some queue can be unexpectedly filled with thousands of slow jobs
