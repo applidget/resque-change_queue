@@ -39,6 +39,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "byebug", "~> 9.0"
 
-  spec.add_runtime_dependency 'redis', '< 5'
+  spec.add_runtime_dependency 'redis', '< 6'
   spec.add_runtime_dependency 'resque', '>= 1.25', '< 3'
 end
